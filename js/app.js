@@ -54,7 +54,7 @@ let S;try{S=JSON.parse(localStorage.getItem('sotay1'))||def()}catch(e){S=def()}
 const save=()=>{try{localStorage.setItem('sotay1',JSON.stringify(S))}catch(e){}};
 const SV5T=`Đạo đức: Điểm rèn luyện từ 85/100 trở lên|Đạo đức: Không vi phạm pháp luật, quy chế, nội quy của Nhà trường|Đạo đức (ưu tiên): Đảng viên hoặc lớp bồi dưỡng nhận thức về Đảng|Đạo đức (ưu tiên): Thi tìm hiểu Mác – Lênin, tư tưởng Hồ Chí Minh từ cấp Khoa, đạt từ 60%|Đạo đức (ưu tiên): Hoạt động giáo dục đạo đức, lối sống, lòng yêu nước do Đoàn – Hội trường tổ chức|Học tập: GPA học kỳ 1 và 2 từ 2,8/4,0 trở lên|Học tập: Không có môn điểm D, F và không nợ tín chỉ (không tính học kỳ hè)|Học tập (ưu tiên): Giải học thuật, nghiệp vụ, thi chuyên ngành cấp Khoa trở lên|Học tập (ưu tiên): Nghiên cứu khoa học hoặc sáng kiến học thuật|Học tập (ưu tiên): Hoạt động Đồng hành sinh viên trong học tập|Thể lực (đạt 1): Sinh viên khỏe cấp Trường, hoặc giải Ba thể thao cấp Khoa, hoặc đội tuyển cấp Khoa|Thể lực (đạt 1): Rèn luyện định kỳ tại 1 CLB/đội thể thao, hoặc 1 hoạt động thể lực do Đoàn – Hội trường tổ chức|Tình nguyện (đạt 1): Tham gia ít nhất 4 ngày tình nguyện|Tình nguyện (đạt 1): Được khen thưởng trong hoạt động tình nguyện|Hội nhập: Hoàn thành ngoại ngữ cơ bản 1, 2 (hoặc B1) VÀ chứng chỉ ứng dụng CNTT cơ bản|Hội nhập (ưu tiên): Giải Ba trở lên cuộc thi có dùng ngoại ngữ cấp Khoa|Hội nhập (ưu tiên): Giao lưu quốc tế cấp Khoa trở lên|Hội nhập (ưu tiên): Thành viên chính thức CLB Hội Sinh viên (3 hoạt động/năm, từ 6 tháng)|Hội nhập (ưu tiên): Khen thưởng công tác Đoàn – Hội từ cấp Khoa|Hội nhập (ưu tiên): Hoạt động hội nhập do Đoàn – Hội trường tổ chức`.split('|');
 const TK=['Giữ GPA tích lũy đạt mục tiêu (xem mục GPA)','Không nợ tín chỉ, không có điểm dưới C','Đủ số giờ học mục tiêu mỗi ngày','Tổng ôn cuối mỗi tuần','Tham gia nghiên cứu khoa học hoặc hội thi học thuật','Hoàn thành chứng chỉ chuẩn đầu ra đúng hạn'];
-if(!S.v){S.v=2;S.tab='home';S.ev=[];S.log={};S.rf={};S.goalH=6;S.tot=130;S.cw=0;if(!S.goals[0].i.length)S.goals[0].i=SV5T.map(t=>({id:Math.random(),t,x:0}));S.goals.push({n:'Thủ khoa đầu ra',i:TK.map(t=>({id:Math.random(),t,x:0}))})}
+if(!S.v){S.v=2;S.tab='home';S.ev=[];S.log={};S.rf={};S.goalH=6;S.tot=113;S.cw=0;if(!S.goals[0].i.length)S.goals[0].i=SV5T.map(t=>({id:Math.random(),t,x:0}));S.goals.push({n:'Thủ khoa đầu ra',i:TK.map(t=>({id:Math.random(),t,x:0}))})}
 const uid=()=>Date.now()+Math.random();
 const TABS=[['home','Hôm nay'],['hab','Thói quen'],['cal','Lịch'],['week','Việc theo ngày'],['en','Tiếng Anh'],['docs','Tài liệu'],['goals','Mục tiêu'],['gpa','GPA']];
 function calc(rows){let p=0,c=0,s10=0;rows.forEach(r=>{if(!r.x&&r.sc!==''&&r.sc!=null){p+=g4(+r.sc)*r.c;s10+=+r.sc*r.c;c+=r.c}});return{p,c,g:c?p/c:0,a:c?s10/c:0}}
@@ -104,12 +104,26 @@ function vGoals(){
   g.i.map(x=>`<div class="t ${x.x?'d':''}"><input type="checkbox" id="g${x.id}" ${x.x?'checked':''} data-a="gt" data-g="${gi}" data-id="${x.id}"><label for="g${x.id}">${esc(x.t)}</label><button class="x" data-a="gd" data-g="${gi}" data-id="${x.id}" aria-label="Xóa">×</button></div>`).join('')+
   `<input style="width:100%;margin-top:8px;box-sizing:border-box" placeholder="Thêm tiêu chí / minh chứng…" data-add="goal" data-g="${gi}"></div>`}).join('')+'</div>'}
 
+function gpaPlan(all,T,tg,un){
+ const R=Math.max(T-all.c,un);if(!R)return{R:0};
+ const n=all.c+R,D=all.p+4*R-tg*n,top=(all.p+4*R)/n;
+ if(D<-1e-9)return{R,ok:0,top};
+ const m=k=>Math.min(R,Math.floor(D/k+1e-9));
+ const row=(l,g,k)=>{const x=m(k),a=R-x;return{l,x,a,gpa:(all.p+4*a+g*x)/n}};
+ return{R,ok:1,top,rows:[row('B',3,1),row('C',2,2),row('D',1,3)],allB:(all.p+3*R)/n}}
 function vGpa(){
  const all=calc(S.co),sems=[...new Set(S.co.map(r=>r.s))];
  let un=0,pend=S.co.filter(r=>!r.x&&(r.sc===''||r.sc==null));un=pend.reduce((a,r)=>a+r.c,0);
  const need=un?(S.tg*(all.c+un)-all.p)/un:null;
- let h=`<h2>Điểm &amp; GPA</h2><div class="grid"><div class="card"><div class="mut">GPA tích lũy (hệ 4)</div><div class="big">${f2(all.g)}</div></div><div class="card"><div class="mut">Điểm TB tích lũy (hệ 10)</div><div class="big">${f2(all.a)}</div></div><div class="card"><div class="mut">Tín chỉ tính GPA</div><div class="big">${all.c}</div></div></div>
- <div class="card" style="margin:10px 0"><div class="row"><b>Mục tiêu GPA</b><input type="number" step="0.01" min="0" max="4" value="${S.tg}" data-ch="tg" style="width:80px"></div><div style="margin-top:6px">${need==null?'<span class="mut">Chưa còn môn nào để dự tính.</span>':`Còn <b>${un}</b> tín chỉ chưa có điểm. Để đạt ${f2(S.tg)}, điểm trung bình hệ 4 các môn đó cần khoảng <b>${f2(need)}</b>${need>4?' (không khả thi, hãy hạ mục tiêu)':need<=0?' (đã đạt chắc chắn)':''}.`}</div></div>`;
+ let h=`<h2>Điểm &amp; GPA</h2><div class="grid"><div class="card"><div class="mut">GPA tích lũy (hệ 4)</div><div class="big">${f2(all.g)}</div></div><div class="card"><div class="mut">Điểm TB tích lũy (hệ 10)</div><div class="big">${f2(all.a)}</div></div><div class="card"><div class="mut">Tín chỉ tính GPA</div><div class="big">${all.c}</div></div><div class="card"><div class="mut">🎓 Tổng STC phải học</div><input type="number" min="1" max="300" value="${S.tot}" data-ch="tot" class="big" style="width:90px;color:var(--ac);padding:0 4px" aria-label="Tổng số tín chỉ phải học"></div></div>
+ <div class="card" style="margin:10px 0"><div class="row"><b>Mục tiêu GPA</b><input type="number" step="0.01" min="0" max="4" value="${S.tg}" data-ch="tg" style="width:80px"></div><div style="margin-top:6px">${need==null?'<span class="mut">Chưa còn môn nào để dự tính.</span>':`Còn <b>${un}</b> tín chỉ chưa có điểm. Để đạt ${f2(S.tg)}, điểm trung bình hệ 4 các môn đó cần khoảng <b>${f2(need)}</b>${need>4?' (không khả thi, hãy hạ mục tiêu)':need<=0?' (đã đạt chắc chắn)':''}.`}</div></div>`
+ const pl=gpaPlan(all,S.tot,S.tg,un);
+ h+=`<div class="card" style="margin:10px 0"><b>Còn bao nhiêu tín A, tín B thì vẫn đạt mục tiêu?</b>`+(!pl.R?`<div class="mut" style="margin-top:6px">Đã học đủ ${S.tot} tín chỉ. GPA hiện tại ${f2(all.g)} so với mục tiêu ${f2(S.tg)}.</div>`:
+  `<div class="mut" style="margin:6px 0">Tổng ${S.tot} tín chỉ, đã có điểm ${all.c}, còn <b>${pl.R}</b> tín chỉ. Mục tiêu GPA ${f2(S.tg)}.</div>`+
+  (pl.ok?`<div class="sc"><table><tr><th>Phần còn lại gồm</th><th>Tối đa</th><th>Tối thiểu A</th><th>GPA cuối</th></tr>`+
+   pl.rows.map(r=>`<tr><td>A và ${r.l}</td><td><b>${r.x}</b> tín ${r.l}</td><td><b>${r.a}</b> tín A</td><td>${f2(r.gpa)}</td></tr>`).join('')+`</table></div>`+
+   `<div class="note ${pl.allB>=S.tg?'g':''}" style="margin-top:10px">${pl.allB>=S.tg?`Dù ${pl.R} tín chỉ còn lại đều là B, GPA vẫn đạt ${f2(pl.allB)}.`:`Nếu toàn A, GPA cuối cùng là ${f2(pl.top)}. Mỗi tín B thay cho A làm GPA cuối giảm khoảng ${f2(1/(all.c+pl.R))}.`}</div>`:
+   `<div class="note">Dù ${pl.R} tín chỉ còn lại đều đạt A, GPA tối đa chỉ là <b>${f2(pl.top)}</b>, thấp hơn mục tiêu ${f2(S.tg)}. Hãy hạ mục tiêu hoặc kiểm tra lại tổng STC.</div>`))+`</div>`;
  sems.forEach(s=>{const rows=S.co.map((r,i)=>({...r,i})).filter(r=>r.s===s),c=calc(rows);
   h+=`<div class="card sc" style="margin-bottom:10px"><div class="row sp"><b>${s}</b><span class="mut">GPA kỳ: ${c.c?f2(c.g):'—'}</span></div><table><tr><th>Học phần</th><th>TC</th><th>Điểm</th><th>Hệ 4</th><th>Không tính</th></tr>`+
   rows.map(r=>`<tr><td>${esc(r.n)}</td><td>${r.c}</td><td><input type="number" step="0.1" min="0" max="10" value="${r.sc}" data-ch="sc" data-i="${r.i}" aria-label="Điểm ${esc(r.n)}"></td><td>${r.sc!==''&&!r.x?g4(+r.sc).toFixed(1):'—'}</td><td><input type="checkbox" ${r.x?'checked':''} data-ch="ex" data-i="${r.i}" aria-label="Không tính GPA"></td></tr>`).join('')+'</table></div>'});
@@ -162,7 +176,7 @@ document.addEventListener('change',e=>{const t=e.target,d=t.dataset;
  if(d.ch==='sc'){S.co[+d.i].sc=t.value===''?'':Math.min(10,Math.max(0,+t.value))}
  else if(d.ch==='ex'){S.co[+d.i].x=t.checked}
  else if(d.ch==='tg'){S.tg=Math.min(4,Math.max(0,+t.value||0))}
- else if(d.ch==='rf'){S.rf[d.day]=t.value}else if(d.ch==='gh'){S.goalH=Math.min(16,Math.max(1,+t.value||6))}else if(d.ch==='tot'){S.tot=Math.max(1,+t.value||130)}else return;render()});
+ else if(d.ch==='rf'){S.rf[d.day]=t.value}else if(d.ch==='gh'){S.goalH=Math.min(16,Math.max(1,+t.value||6))}else if(d.ch==='tot'){S.tot=Math.max(1,+t.value||113)}else return;render()});
 document.addEventListener('keydown',e=>{if(e.key!=='Enter'&&!(e.key===' '&&e.target.dataset.a==='fl'))return;const t=e.target,d=t.dataset;
  if(d.a==='fl'){e.preventDefault();S.fl=S.fl?0:1;render();return}
  const v=(t.value||'').trim();if(!v)return;
