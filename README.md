@@ -8,8 +8,8 @@ Không cần cài đặt hay build. Dữ liệu lưu trong `localStorage` của 
 
 ```
 index.html      giao diện chính
-css/style.css   toàn bộ kiểu dáng (có chế độ tối tự động)
-js/app.js       dữ liệu mẫu, các màn hình và xử lý sự kiện
+style.css       toàn bộ kiểu dáng (có chế độ tối tự động)
+app.js          dữ liệu mẫu, các màn hình và xử lý sự kiện
 ```
 
 ## Chạy thử
